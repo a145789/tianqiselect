@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <p><input type="text" value="北京"><input type="button" value="提交"></p>
+    <p class="tq">
+        <h4></h4>
+        <h5></h5>
+        <h5></h5>
+        <h5></h5>
+        <h5></h5>
+        <h5></h5>
+        <h5></h5>
+    </p>
+    <script>
+        let inp = document.getElementsByTagName('input');
+        inp[1].onclick = function(){
+            console.log(inp[0].value);
+             $.get("http:127.0.0.1:5000/a/b?city=" + inp[0].value,function(data){
+                obj = JSON.parse(data);
+                if(obj.code == 200){
+                    $('h4').html('当前城市：' + inp[0].value + ' &nbsp; &nbsp; &nbsp; 当前温度：' + obj.data.wendu + '°C');
+                    var arr = obj.data.forecast;
+                    for(key in arr){
+                        $('h5').eq(key).html(arr[key].date + ' &nbsp; &nbsp; &nbsp' + '最' + arr[key].high + ' &nbsp; &nbsp; &nbsp最' + arr[key].low + ' &nbsp; &nbsp; &nbsp' + arr[key].fengli.match(/([0-9]\-||[\>\<])[0-9][\W]?/g)[0] + ' &nbsp; &nbsp; &nbsp' + arr[key].fengxiang + ' &nbsp; &nbsp; &nbsp' + arr[key].type);
+                    }
+                    $('h5').eq(5).text('小贴士：' + obj.data.ganmao);
+                }else{
+                    $('.tq').text('暂未获取到数据！请检查城市拼写与网络！');
+                }
+             });
+        }
+    </script>
+</body>
+</html>
